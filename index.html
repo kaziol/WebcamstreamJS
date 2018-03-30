@@ -33,6 +33,7 @@
         /* Style the button used to pause/play the video */
 
         .myBtn {
+            font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
             width: 200px;
             font-size: 18px;
             padding: 10px;
@@ -40,6 +41,7 @@
             background: #000;
             color: #fff;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .myBtn:hover {
@@ -47,7 +49,10 @@
             color: black;
         }
 
+
+
         #timer {
+            font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
             width: 200px;
             font-size: 18px;
             padding: 10px;
@@ -73,6 +78,7 @@
         <button id="startBtn" onclick="handleStartButton()" class="myBtn">Start</button>
         <button id="pauseBtn" onclick="handlePauseButton()" class="myBtn">Pause</button>
         <time id="timer"></time>
+        <a id="downloadVideo" href="" download="" class="myBtn">Download video</a>
         <div id="brightnessBarContainer"><input id="brightnessBar" type="range" min="0" max="200">
         </div>
     </div>
@@ -81,7 +87,9 @@
 
     <script>
         var video = document.querySelector("#videoElement");
-
+        var downloadVideo = document.querySelector("#downloadVideo");
+        downloadVideo.style.visibility = "hidden";
+        var recorder;
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
 
         var hdConstraints = {
@@ -93,6 +101,7 @@
 
         function handleVideo(stream) {
             video.src = window.URL.createObjectURL(stream);
+            recorder = new MediaRecorder(stream);
         }
         function videoError(e) {
             console.log(e);
@@ -125,11 +134,21 @@
                 startBtn.innerHTML = "Start";
                 pauseBtn.disabled= true;
                 timerClock.style.visibility = "hidden";
-            } else {
+                recorder.stop();
+                recorder.ondataavailable = e => {
+                    var videoUrl = URL.createObjectURL(e.data);
+                    downloadVideo.href = videoUrl;
+                    downloadVideo.download = ['video_', (new Date() + '').slice(4, 28), '.webm'].join('');
+                    downloadVideo.style.visibility = "visible";
+                  };                  
+            } 
+            else {
                 start = Date.now();
                 startBtn.innerHTML = "Stop";
                 pauseBtn.disabled= false;
                 timerClock.style.visibility = "visible";
+                recorder.start();
+                downloadVideo.style.visibility = "hidden";
             }
         }
         function handlePauseButton() {
@@ -137,12 +156,14 @@
             if (pausedAt == null && startBtn.innerHTML === "Stop") {
                 pausedAt = new Date();
                 pauseBtn.innerHTML = "Resume";
+                recorder.pause();
             }
             else {
                 var pausedFor = new Date() - pausedAt;
                 start = start + pausedFor;
                 pausedAt = null;
                 pauseBtn.innerHTML = "Pause";
+                recorder.resume();
             }
         }
 
