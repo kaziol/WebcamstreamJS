@@ -58,6 +58,11 @@
             color: #fff;
             cursor: pointer;
         }
+        #brightnessBar{
+  			float: right;
+  			background: transparent;
+  			padding-right: 50px;
+        }
     </style>
 </head>
 
@@ -66,6 +71,7 @@
         <button id="startBtn" onclick="handleStartButton()" class="myBtn">Start</button>
         <button id="pauseBtn" onclick="handlePauseButton()" class="myBtn">Pause</button>
         <time id="timer"></time>
+        <input id="brightnessBar" type="range" min="0" max="200">
     </div>
     <video autoplay="true" id="videoElement" />
 
@@ -144,15 +150,17 @@
             s = (s - secs) / 60;
             var mins = s % 60;
             var hrs = (s - mins) / 60;
-
-
             return hrs + ':' + mins + ':' + secs;
         }
 
 
-
-
-
+         var slider = document.getElementById("brightnessBar");
+         slider.defaultValue = 100; 
+		slider.oninput = function() {
+			var brightness= this.value;
+			console.log(brightness);
+			video.style.filter = "brightness(" + brightness + "%)";
+		} 
     </script>
 </body>
 
