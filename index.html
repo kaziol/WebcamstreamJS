@@ -98,7 +98,7 @@
         var myVar = setInterval(function () { myTimer() }, 500);
         function myTimer() {
             if (start != null && pausedAt == null) {
-                console.log("Start");
+                console.log("Start timer");
                 console.log(start);
                 var diff = new Date() - start;
                 console.log(diff);
@@ -107,8 +107,11 @@
         }
 
         function handleStartButton() {
+            console.log(startBtn.innerHTML);
             if (startBtn.innerHTML === "Stop") {
                 start = null;
+                pausedAt=null;
+                pauseBtn.innerHTML="Pause";
                 timerClock.innerHTML = "0:0:0";
                 startBtn.innerHTML = "Start";
                 pauseBtn.disabled= true;
@@ -118,9 +121,9 @@
                 pauseBtn.disabled= false;
 
             }
-            console.log(startBtn.innerHTML);
         }
         function handlePauseButton() {
+        	console.log(pauseBtn.innerHTML);
             if (pausedAt == null && startBtn.innerHTML === "Stop") {
                 pausedAt = new Date();
                 pauseBtn.innerHTML = "Resume";
