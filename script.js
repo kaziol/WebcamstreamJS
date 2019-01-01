@@ -20,7 +20,9 @@ downloadVideo.style.visibility = "hidden";
 
 
 function handleVideo(stream) {
-    video.src = window.URL.createObjectURL(stream);
+   // console.log(stream);
+   // video.src = window.URL.createObjectURL(stream);
+    video.srcObject=stream;
     recorder = new MediaRecorder(stream);
 }
 function videoError(e) {
